@@ -7,7 +7,7 @@ export default class Fetcher {
 		return new Promise((resolve, reject) => {
 			https.get(url, res => {
 				getStream(res).then(body => {
-					const doc = new Doc(body)
+					const doc = new Doc(url, body)
 					resolve(doc)
 				}).catch(reject)
 			})
