@@ -5,7 +5,9 @@ import makeThrough from './shared/through'
 Fetcher.fetch('https://wiki.lineageos.org/devices/').
 		then(doc => {
 			const transformer = makeThrough<Doc, string>((doc, emit) => {
-				emit(String(doc.$('a').length))
+				doc.$('a').each(function () {
+					emit(doc.$(this).attr('href') + '\n')
+				})
 			})
 			transformer.pipe(process.stdout)
 			transformer.write(doc)
