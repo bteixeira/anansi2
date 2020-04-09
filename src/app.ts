@@ -1,12 +1,16 @@
 import Fetcher from './shared/Fetcher'
 import Doc from './shared/Doc'
 import makeThrough from './shared/through'
+import * as url from 'url'
 
 Fetcher.fetch('https://wiki.lineageos.org/devices/').
 		then(doc => {
 			const transformer = makeThrough<Doc, string>((doc, emit) => {
-				doc.$('a').each(function () {
-					emit(doc.$(this).attr('href') + '\n')
+				const elems = doc.$('.table.device tbody tr:not(.discontinued) th a')
+				elems.each(function () {
+					const href = doc.$(this).attr('href')
+					const resolved = url.resolve(doc.url, href)
+					emit(resolved + '\n')
 				})
 			})
 			transformer.pipe(process.stdout)

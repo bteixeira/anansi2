@@ -1,6 +1,7 @@
 import * as https from 'https'
 import Doc from './Doc'
 import getStream from 'get-stream'
+import makeThrough from './through'
 
 export default class Fetcher {
 	static fetch (url: string): Promise<Doc> {
@@ -13,4 +14,10 @@ export default class Fetcher {
 			})
 		})
 	}
+}
+
+export function makeFetcherThrough () {
+	return makeThrough<string, Doc>((url, emit) => {
+		Fetcher.fetch(url).then(emit)
+	})
 }
