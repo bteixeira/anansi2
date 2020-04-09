@@ -1,37 +1,37 @@
-import Fetcher from './shared/Fetcher'
+import {makeFetcherThrough} from './shared/Fetcher'
 import Doc from './shared/Doc'
 import makeThrough from './shared/through'
 import * as url from 'url'
+import {Record} from './shared/RecordList'
 
-Fetcher.fetch('https://wiki.lineageos.org/devices/').
-		then(doc => {
-			const transformer = makeThrough<Doc, string>((doc, emit) => {
-				const elems = doc.$('.table.device tbody tr:not(.discontinued) th a')
-				elems.each(function () {
-					const href = doc.$(this).attr('href')
-					const resolved = url.resolve(doc.url, href)
-					emit(resolved + '\n')
-				})
+const first = makeFetcherThrough()
+first.
+		pipe(makeThrough<Doc, string>((doc, emit) => {
+			const elems = doc.$('.table.device tbody tr:not(.discontinued) th a')
+			elems.each(function () {
+				const href = doc.$(this).attr('href')
+				const resolved = url.resolve(doc.url, href)
+				emit(resolved)
 			})
-			transformer.pipe(process.stdout)
-			transformer.write(doc)
-		}).
-		catch(err => console.error(err))
+		})).
+		pipe(makeFetcherThrough()).
+		pipe(makeThrough<Doc, void>((doc, emit) => {
+			const record: Record = {}
+			doc.$('.deviceinfo.table tr').each((i, el) => {
+				const $el = doc.$(el)
+				const $children = $el.children()
+				if ($children.length !== 2) {
+					return
+				}
+				const key = $children.eq(0).text().trim()
+				const value = $children.eq(1).text().trim().replace(/\s\s+/g, ' // ')
+				record[key] = value
+			})
+			console.log(record)
+			emit()
+		}))
 
-// fetch('https://wiki.lineageos.org/devices/').pipeLinks(
-// 		(doc, emit) => {
-// 			doc.$('.table.device tbody tr[not(.discontinued)] th a').attr('href').forEach(
-// 					emit
-// 			)
-// 		}
-// ).pipeRecords(
-// 		(doc, emit) => {
-// 			const record = {}
-// 			doc.$('.deviceinfo.table tr[countChildren()==2]').forEach(tr => {
-// 				const [th, td] = tr.children()
-// 				record[th.text()] = td.text()
-// 			})
-// 			emit(record)
-// 		}
-// ).toCSV('./records.csv')
+
+first.write('https://wiki.lineageos.org/devices/')
+// first.end()
 

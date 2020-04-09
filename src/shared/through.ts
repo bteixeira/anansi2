@@ -6,9 +6,10 @@ type Transformer<I, O> = (
 ) => void
 
 export default function makeThrough<I, O> (transformer: Transformer<I, O>) {
-	return through2.obj(function (chunk, enc, flush) {
+	return through2.obj(function (chunk, enc, callback) {
 		transformer(chunk, output => {
 			this.push(output)
 		})
+		callback()
 	})
 }
