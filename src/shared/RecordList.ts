@@ -1,3 +1,4 @@
+import makeThrough from './through'
 
 export type Record = {[key: string]: string}
 
@@ -45,4 +46,18 @@ export default class RecordList {
 			return newRecord
 		})
 	}
+}
+
+export function makeAggregatorThrough () {
+	const list: RecordList = new RecordList()
+	return makeThrough<Record, RecordList>(
+			(record, emit, done) => {
+				list.add(record)
+				done()
+			},
+			(emit, done) => {
+				emit(list)
+				done()
+			},
+	)
 }

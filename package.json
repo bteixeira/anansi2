@@ -5,7 +5,8 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"start": "ts-node src/app.ts"
+		"start": "ts-node src/app.ts",
+		"debug": "node --inspect-brk --require ts-node/register src/app.ts"
 	},
 	"author": "",
 	"license": "ISC",
@@ -21,6 +22,7 @@
 		"mississippi": "^4.0.0",
 		"through2": "^3.0.1",
 		"ts-node": "^8.8.2",
+		"ts-node-dev": "^1.0.0-pre.44",
 		"typescript": "^3.8.3"
 	}
 }
