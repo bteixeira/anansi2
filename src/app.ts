@@ -20,6 +20,7 @@ first.
 		pipe(makeFetcherThrough()).
 		pipe(makeThrough<Doc, Record>((doc, emit, done) => {
 			const record: Record = {}
+			record['Name'] = doc.$('table.table.deviceinfo tr th[colspan="2"]').eq(0).text().trim()
 			doc.$('.deviceinfo.table tr').each((i, el) => {
 				const $el = doc.$(el)
 				const $children = $el.children()

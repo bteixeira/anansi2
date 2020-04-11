@@ -9,11 +9,21 @@ export default function makeTabFormatter (includeHeader = true) {
 				done()
 			},
 			(emit, done) => {
-				emit(
-						list.getTableData(includeHeader).map(row =>
-								row.map(s => s.replace(/[\t\n]+/g, ' ')).join('\t'),
-						).join('\n'),
-				)
+				// list.applyTransform(
+				// 		(k, v) => {
+				// 			if (!v.includes('\n')) {
+				// 				return {[k]: v}
+				// 			}
+				// 			const result: Record = {}
+				// 			const parts = v.split('\n').map(s => s.trim())
+				// 			parts.forEach((p, i) => result[`${k} [${i}]`] = p)
+				// 			return result
+				// 		}
+				// )
+				const data = list.getTableData(includeHeader).map(row =>
+						row.map(s => s.replace(/[\t\n]+/g, ' ')).join('\t'),
+				).join('\n')
+				emit(data)
 				done()
 			},
 	)

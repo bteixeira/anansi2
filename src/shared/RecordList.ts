@@ -1,8 +1,10 @@
 
 export type Record = {[key: string]: string}
 
+type Transform = (key: string, value: string) => Record
+
 export default class RecordList {
-	private readonly records: Record[] = []
+	private records: Record[] = []
 
 	add (record: Record): void {
 		this.records.push(record)
@@ -29,5 +31,18 @@ export default class RecordList {
 			result.push(row)
 		})
 		return result
+	}
+
+	applyTransform (transform: Transform): void {
+		this.records = this.records.map(record => {
+			const newRecord: Record = {}
+			Object.entries(record).forEach(([k, v]) => {
+				const transformed = transform(k, v)
+				Object.entries(transformed).forEach(([kk, vv]) => {
+					newRecord[kk] = vv
+				})
+			})
+			return newRecord
+		})
 	}
 }
