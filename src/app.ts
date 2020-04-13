@@ -79,6 +79,19 @@ first.
 					}
 				}
 
+				if (k === 'Dimensions') {
+					const match = v.match(/^(.+)\(h\)(.+)\(w\)(.+)\(d\)/)
+					if (match) {
+						return {
+							'Dim H': match[1].trim(),
+							'Dim W': match[2].trim(),
+							'Dim D': match[3].trim(),
+						}
+					} else {
+						return {[k]: v}
+					}
+				}
+
 				let match = k.match(/(Released)(.*)/)
 				if (match) {
 					const yearMatch = v.match(/^(.+?)(, )?(\d\d\d\d)$/)
@@ -100,8 +113,9 @@ first.
 				// TODO Screen [1], separate res and PPI
 				// TODO Peripherals, before splitting newlines sort alphabetically and join with //
 				// TODO Cameras, what a mess, try to get number and max MP
-				// TODO Dimensions separate into 3
-				// TODO Battery, separatetype and mAh
+				// TODO Battery, separate type and mAh
+
+				// TODO MERGE RECORDS WITH SMALL VARIATIONS (LG G3)
 
 				return {[k]: v}
 			})
