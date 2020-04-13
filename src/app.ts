@@ -44,6 +44,7 @@ first.
 					'Wi-Fi',
 					'Maintainers',
 					'Supported models',
+					'Carrier',
 				]
 				if (EXCLUDE.includes(k)) {
 					return {}
@@ -59,7 +60,7 @@ first.
 
 						const parts = v.split('\n').map(s => s.trim()).filter(s => !!s)
 
-						if (k === 'Cameras') {
+						if (k === 'Cameras' || k === 'Supported versions') {
 							return {
 								[k]: parts.join(' // ')
 							}
@@ -98,6 +99,17 @@ first.
 							'Dim H': match[1].trim(),
 							'Dim W': match[2].trim(),
 							'Dim D': match[3].trim(),
+						}
+					} else {
+						return {[k]: v}
+					}
+				}
+
+				if (k === 'SoC') {
+					const match = v.match(/(Snapdragon\s+\d+)/)
+					if (match) {
+						return {
+							[k]: match[1].trim(),
 						}
 					} else {
 						return {[k]: v}
