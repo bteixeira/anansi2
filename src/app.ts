@@ -56,8 +56,20 @@ first.
 						if (!v.includes('\n')) {
 							return {[k]: v}
 						}
+
+						const parts = v.split('\n').map(s => s.trim()).filter(s => !!s)
+
+						if (k === 'Cameras') {
+							return {
+								[k]: parts.join(' // ')
+							}
+						} else if (k === 'Peripherals') {
+							return {
+								[k]: parts.sort().join(' // ')
+							}
+						}
+
 						const result: Record = {}
-						const parts = v.split('\n').map(s => s.trim())
 						parts.forEach((p, i) => {
 							if (i === 0) {
 								result[k] = p
