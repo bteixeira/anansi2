@@ -1,4 +1,4 @@
-import makeThrough from './through'
+import makeTransformationStep from './through'
 
 export type Record = {[key: string]: string}
 
@@ -48,9 +48,9 @@ export default class RecordList {
 	}
 }
 
-export function makeAggregatorThrough () {
+export function makeRecordAggregatorStream () {
 	const list: RecordList = new RecordList()
-	return makeThrough<Record, RecordList>(
+	return makeTransformationStep<Record, RecordList>(
 			(record, emit, done) => {
 				list.add(record)
 				done()

@@ -1,7 +1,7 @@
 import * as https from 'https'
 import Doc from './Doc'
 import getStream from 'get-stream'
-import makeThrough from './through'
+import makeTransformationStep from './through'
 import * as fs from 'fs'
 import * as crypto from 'crypto'
 
@@ -35,8 +35,8 @@ export default class Fetcher {
 	}
 }
 
-export function makeFetcherThrough () {
-	return makeThrough<string, Doc>((url, emit, done) => {
+export function makeFetcherStep () {
+	return makeTransformationStep<string, Doc>((url, emit, done) => {
 		Fetcher.fetch(url).then(doc => {
 			emit(doc)
 			done()

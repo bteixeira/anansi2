@@ -10,7 +10,7 @@ type Flusher<O> = (
 		done: () => void,
 ) => void
 
-export default function makeThrough<I, O> (transformer: Transformer<I, O>, flusher?: Flusher<O>) {
+export default function makeTransformationStep<I, O> (transformer: Transformer<I, O>, flusher?: Flusher<O>) {
 	return through2.obj(function (chunk, enc, callback) {
 		transformer(chunk, output => {
 			this.push(output)

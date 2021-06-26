@@ -1,14 +1,14 @@
-import {makeFetcherThrough} from './shared/Fetcher'
+import {makeFetcherStep} from './shared/Fetcher'
 import Doc from './shared/Doc'
-import makeThrough from './shared/through'
+import makeTransformationStep from './shared/through'
 import * as url from 'url'
 import * as fs from 'fs'
-import RecordList, {makeAggregatorThrough, Record} from './shared/RecordList'
+import RecordList, {makeRecordAggregatorStream, Record} from './shared/RecordList'
 import makeTabFormatter from './shared/TabFormatter'
 
-const first = makeFetcherThrough()
+const first = makeFetcherStep()
 first.
-		pipe(makeThrough<Doc, string>((doc, emit, done) => {
+		pipe(makeTransformationStep<Doc, string>((doc, emit, done) => {
 			const elems = doc.$('.table.device tbody tr:not(.discontinued) th a')
 			elems.each(function () {
 				const href = doc.$(this).attr('href')
@@ -17,8 +17,8 @@ first.
 			})
 			done()
 		})).
-		pipe(makeFetcherThrough()).
-		pipe(makeThrough<Doc, Record>((doc, emit, done) => {
+		pipe(makeFetcherStep()).
+		pipe(makeTransformationStep<Doc, Record>((doc, emit, done) => {
 			const record: Record = {}
 			record['Name'] = doc.$('table.table.deviceinfo tr th[colspan="2"]').eq(0).text().trim()
 			doc.$('.deviceinfo.table tr').each((i, el) => {
@@ -34,8 +34,8 @@ first.
 			emit(record)
 			done()
 		})).
-		pipe(makeAggregatorThrough()).
-		pipe(makeThrough<RecordList, RecordList>((list, emit, done) => {
+		pipe(makeRecordAggregatorStream()).
+		pipe(makeTransformationStep<RecordList, RecordList>((list, emit, done) => {
 			list.applyTransform((k, v) => {
 				const EXCLUDE = [
 					'Architecture',

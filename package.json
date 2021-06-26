@@ -5,8 +5,8 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"start": "ts-node src/app.ts",
-		"debug": "node --inspect-brk --require ts-node/register src/app.ts"
+		"start": "ts-node src/phone-crawler-app.ts",
+		"debug": "node --inspect-brk --require ts-node/register src/phone-crawler-app.ts"
 	},
 	"author": "",
 	"license": "ISC",
@@ -16,7 +16,7 @@
 		"@types/get-stream": "^3.0.2",
 		"@types/node": "^13.11.0",
 		"@types/through2": "^2.0.34",
-		"cheerio": "^1.0.0-rc.3",
+		"cheerio": "^1.0.0-rc.10",
 		"concat-stream": "^2.0.0",
 		"get-stream": "^5.1.0",
 		"mississippi": "^4.0.0",
