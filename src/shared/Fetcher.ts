@@ -6,6 +6,10 @@ import * as fs from 'fs'
 import * as crypto from 'crypto'
 import {RequestOptions} from 'https'
 
+export function urlBasePath (url: string): string {
+	return url.slice(url.lastIndexOf('/'), url.lastIndexOf('.'))
+}
+
 function urlToCachePath (url: string): string {
 	const normalized = url.replace(/[^a-zA-Z0-9_-]/g, '_')
 	const hash = crypto.createHash('sha256').update(url).digest('hex')
@@ -23,12 +27,12 @@ export default class Fetcher {
 			}
 
 			if (fs.existsSync(cachePath)) {
-				console.log(`Retrieving from cache ${url}`)
+				// console.log(`Retrieving from cache ${url}`)
 				getStream(fs.createReadStream(cachePath)).then(pipeBody)
 			} else {
-				console.log(`Fetching ${url}`, options)
+				// console.log(`Fetching ${url}`)
 				https.get(url, options, res => {
-					console.log(`Fetched ${url}`)
+					// console.log(`Got ${url}`)
 					res.pipe(fs.createWriteStream(cachePath))
 					getStream(res).then(pipeBody).catch(reject)
 				})
