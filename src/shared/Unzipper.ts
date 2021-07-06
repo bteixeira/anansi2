@@ -11,7 +11,7 @@ export function makeUnzipperStep () {
 			storeEntries: true,
 		})
 
-		const pathname = `../expanded/${path.basename(filename)}/`
+		const pathname = `./expanded/${path.basename(filename)}/`
 
 		fs.mkdirSync(pathname, {recursive: true})
 		zip.extract(null, pathname).then((count) => {

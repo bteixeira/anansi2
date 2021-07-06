@@ -3,7 +3,8 @@
 		"noImplicitAny": true,
 		"module": "CommonJS",
 		"moduleResolution": "node",
-		"resolveJsonModule": true
+		"resolveJsonModule": true,
+		"esModuleInterop": true
 	},
 	"files": [
       "src/phone-crawler-app.ts"

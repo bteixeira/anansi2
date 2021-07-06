@@ -27,12 +27,12 @@ export default class Fetcher {
 			}
 
 			if (fs.existsSync(cachePath)) {
-				// console.log(`Retrieving from cache ${url}`)
+				console.log(`Retrieving from cache ${url}`)
 				getStream(fs.createReadStream(cachePath)).then(pipeBody)
 			} else {
-				// console.log(`Fetching ${url}`)
+				console.log(`Fetching ${url}`)
 				https.get(url, options, res => {
-					// console.log(`Got ${url}`)
+					console.log(`Got ${url}`)
 					res.pipe(fs.createWriteStream(cachePath))
 					getStream(res).then(pipeBody).catch(reject)
 				})

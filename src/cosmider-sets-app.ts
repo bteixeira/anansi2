@@ -21,10 +21,11 @@ import Doc from './shared/Doc'
 import * as url from 'url'
 import {makeDownloaderStep} from './shared/Downloader'
 import {makeUnzipperStep} from './shared/Unzipper'
+import config from '../cosmider.json'
 
 const HEADERS = {
 	headers: {
-		'Cookie': 'pcah=Q3pwUms1TFNJaE9ZTWZqU05FbGdEYzhGOVhiSXJ5YW5RdC9BeXNVb1R2ND0K; pcar%5fVGVtcGxhdGUgMDMgTWVtYmVycyBBcmVh=WVF6RW0zSEh0c041VnBGTkpUSFJRNVoyd0dRZEtBdnpvNjRBUUNoVDByZkZ3ODNQVXdtVDRnPT0K; ex_referrer=https%3A%2F%2Fwww.cosmid.net%2Fmembers%2Fmodels%2Flara-wolf.html',
+		'Cookie': config.cookie,
 	},
 }
 
@@ -51,4 +52,4 @@ first
 		.pipe(makeDownloaderStep(HEADERS))
 		.pipe(makeUnzipperStep())
 
-first.end('https://www.cosmid.net/members/models/lara-wolf.html')
+first.write(config.modelPage)
