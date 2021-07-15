@@ -22,6 +22,7 @@ import * as url from 'url'
 import {makeDownloaderStep} from './shared/Downloader'
 import {makeUnzipperStep} from './shared/Unzipper'
 import config from '../cosmider.json'
+import makeLinkSelectorStep from './shared/transforms/LinkSelector'
 
 const HEADERS = {
 	headers: {
@@ -29,27 +30,19 @@ const HEADERS = {
 	},
 }
 
+// TODO GET MODEL NAME FROM CONFIG
+
 const first = makeFetcherStep(HEADERS)
 
 first
-		.pipe(makeTransformationStep<Doc, string>((doc, emit, done) => {
-			doc.$('.featured-scenes .item-portrait h4 a').each(function () {
-				const href = doc.$(this).attr('href')
-				const resolved = url.resolve(doc.url, href)
-				emit(resolved)
-			})
-			done()
-		}))
+		// TODO PIPE TO HREF SELECTOR TRANSFORM BASED ON MODEL NAME
+		// TODO PIPE TO FETCHER
+		// 	// TODO CAN ALSO GET MODEL NAME HERE FROM HTML
+		.pipe(makeLinkSelectorStep('.featured-scenes .item-portrait h4 a'))
 		.pipe(makeFetcherStep(HEADERS))
-		.pipe(makeTransformationStep<Doc, string>((doc, emit, done) => {
-			doc.$('#download_options_block a').each(function () {
-				const href = doc.$(this).attr('href')
-				const resolved = url.resolve(doc.url, href)
-				emit(resolved)
-			})
-			done()
-		}))
-		.pipe(makeDownloaderStep(HEADERS))
-		.pipe(makeUnzipperStep())
+		.pipe(makeLinkSelectorStep('#download_options_block a'))
+		.pipe(makeDownloaderStep(HEADERS)) // Target dir
+		.pipe(makeUnzipperStep()) // TODO EMITS DIR PATH
+		// TODO NEW STEP <VOID> Finds "watermark" subdir and flattens it
 
-first.write(config.modelPage)
+first.write(config.modelPage) // TODO WRITE MODEL INITIAL LETTER PAGE INSTEAD, GET FROM MODEL NAME

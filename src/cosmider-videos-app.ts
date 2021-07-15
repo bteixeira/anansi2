@@ -22,6 +22,8 @@ import * as url from 'url'
 import {makeDownloaderStep} from './shared/Downloader'
 import {makeUnzipperStep} from './shared/Unzipper'
 import config from '../cosmider.json'
+import makeLinkSelectorStep from './shared/transforms/LinkSelector'
+import makeFilterStep from './shared/transforms/Filter'
 
 const HEADERS = {
 	headers: {
@@ -32,28 +34,10 @@ const HEADERS = {
 const first = makeFetcherStep(HEADERS)
 
 first
-		.pipe(makeTransformationStep<Doc, string>((doc, emit, done) => {
-			doc.$('.item-video h4 a').each(function () {
-				const href = doc.$(this).attr('href')
-				const resolved = url.resolve(doc.url, href)
-				emit(resolved)
-			})
-			done()
-		}))
+		.pipe(makeLinkSelectorStep('.item-video h4 a'))
 		.pipe(makeFetcherStep(HEADERS))
-		.pipe(makeTransformationStep<Doc, string>((doc, emit, done) => {
-			doc.$('#download_options_block a').each(function () {
-				const href = doc.$(this).attr('href')
-				if (href.indexOf(config.videoRes) !== -1) {
-					return
-				}
-				// console.log(href, )
-				const resolved = url.resolve(doc.url, href)
-				emit(resolved)
-			})
-			done()
-		}))
+		.pipe(makeLinkSelectorStep('#download_options_block a'))
+		.pipe(makeFilterStep<string>(href => href.indexOf(config.videoRes) !== -1))
 		.pipe(makeDownloaderStep(HEADERS))
-		.pipe(makeUnzipperStep())
 
 first.write(config.modelPage)

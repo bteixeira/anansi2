@@ -8,6 +8,12 @@ function urlBasePath (url: string): string {
 	return url.slice(url.lastIndexOf('/'))
 }
 
+/*
+* New options:
+* 	- Target dir
+* 	- Filename suffix
+* */
+
 export default class Downloader {
 	static fetch (url: string, options?: RequestOptions): Promise<string> {
 		return new Promise((resolve, reject) => {
@@ -15,18 +21,18 @@ export default class Downloader {
 			const filename = `./dump${basepath}`
 
 			if (fs.existsSync(filename)) {
-				console.log(`Retrieving from cache ${basepath}`)
+				console.log(`[DOWNL] CACHE ${basepath}`)
 				resolve(filename)
 			} else {
-				console.log(`Downloading ${basepath}`)
+				console.log(`[DOWNL] START ${basepath}`)
 				https.get(url, options, res => {
 					fs.mkdirSync(path.dirname(filename), {recursive: true})
-					console.log(`Created dirs`, path.dirname(filename), fs.existsSync(path.dirname(filename)))
+					console.log(`[DOWNL] Created dirs`, path.dirname(filename), fs.existsSync(path.dirname(filename)))
 					const outputStream = fs.createWriteStream(filename)
-					outputStream.on('error', err => console.error(err))
+					outputStream.on('error', err => console.error('[DOWNL] ERROR', err))
 					res.pipe(outputStream)
 					res.on('end', () => {
-						console.log(`Finished Downloading ${filename}`)
+						console.log(`[DOWNL] END ${filename}`)
 						resolve(filename)
 					})
 					res.on('error', err => {
