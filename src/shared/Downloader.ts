@@ -5,7 +5,7 @@ import * as path from 'path'
 import {RequestOptions} from 'https'
 
 function urlBasePath (url: string): string {
-	return url.slice(url.lastIndexOf('/'))
+	return url.slice(url.lastIndexOf('/') + 1)
 }
 
 /*
@@ -15,10 +15,12 @@ function urlBasePath (url: string): string {
 * */
 
 export default class Downloader {
-	static fetch (url: string, options?: RequestOptions): Promise<string> {
+	static fetch (url: string, target: string, options?: RequestOptions): Promise<string> {
 		return new Promise((resolve, reject) => {
+			console.log(`[DOWNL]`, target)
 			const basepath = urlBasePath(url)
-			const filename = `./dump${basepath}`
+			const filename = path.resolve(target, `${basepath}.tmp`)
+			console.log(`[DOWNL]`, filename)
 
 			if (fs.existsSync(filename)) {
 				console.log(`[DOWNL] CACHE ${basepath}`)
@@ -45,9 +47,9 @@ export default class Downloader {
 	}
 }
 
-export function makeDownloaderStep (options?: RequestOptions) {
+export function makeDownloaderStep (target: string, options?: RequestOptions) {
 	return makeTransformationStep<string, string>((url, emit, done) => {
-		Downloader.fetch(url, options).then(filename => {
+		Downloader.fetch(url, target, options).then(filename => {
 			emit(filename)
 			done()
 		})

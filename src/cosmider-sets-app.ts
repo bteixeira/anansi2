@@ -32,6 +32,8 @@ const HEADERS = {
 
 // TODO GET MODEL NAME FROM CONFIG
 
+console.log('\n*** STARTING APP: SETS ***')
+
 const first = makeFetcherStep(HEADERS)
 
 first
@@ -41,8 +43,8 @@ first
 		.pipe(makeLinkSelectorStep('.featured-scenes .item-portrait h4 a'))
 		.pipe(makeFetcherStep(HEADERS))
 		.pipe(makeLinkSelectorStep('#download_options_block a'))
-		.pipe(makeDownloaderStep(HEADERS)) // Target dir
-		.pipe(makeUnzipperStep()) // TODO EMITS DIR PATH
+		.pipe(makeDownloaderStep(`./downloads/${config.modelName}`, HEADERS)) // Target dir
+		.pipe(makeUnzipperStep(`/home/bruno/System/CSMD/${config.modelName}`)) // TODO EMITS DIR PATH
 		// TODO NEW STEP <VOID> Finds "watermark" subdir and flattens it
 
 first.write(config.modelPage) // TODO WRITE MODEL INITIAL LETTER PAGE INSTEAD, GET FROM MODEL NAME

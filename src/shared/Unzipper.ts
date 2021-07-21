@@ -7,7 +7,7 @@ import * as StreamZip from 'node-stream-zip'
  * New options:
  * - target dir (relative)
  */
-export function makeUnzipperStep () {
+export function makeUnzipperStep (target = './expanded') {
 	return makeTransformationStep<string, void>((filename, emit, done) => {
 		console.log(`[UNZIP] START ${filename}`)
 		const zip = new StreamZip.async({
@@ -15,8 +15,7 @@ export function makeUnzipperStep () {
 			storeEntries: true,
 		})
 
-		// TODO from options
-		const pathname = `./expanded/${path.basename(filename)}/`
+		const pathname = path.resolve(target, path.basename(filename))
 
 		fs.mkdirSync(pathname, {recursive: true})
 		zip.extract(null, pathname).then((count) => {

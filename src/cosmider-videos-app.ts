@@ -31,13 +31,18 @@ const HEADERS = {
 	},
 }
 
+console.log('\n*** STARTING APP: VIDEOS ***')
+
 const first = makeFetcherStep(HEADERS)
 
 first
 		.pipe(makeLinkSelectorStep('.item-video h4 a'))
 		.pipe(makeFetcherStep(HEADERS))
 		.pipe(makeLinkSelectorStep('#download_options_block a'))
-		.pipe(makeFilterStep<string>(href => href.indexOf(config.videoRes) !== -1))
-		.pipe(makeDownloaderStep(HEADERS))
+		.pipe(makeFilterStep<string>(href => {
+			console.log('FILTER *** ', href, href.indexOf(config.videoRes) !== -1)
+			return href.indexOf(config.videoRes) !== -1
+		}))
+		.pipe(makeDownloaderStep(`/home/bruno/System/CSMD/${config.modelName}`, HEADERS))
 
 first.write(config.modelPage)
