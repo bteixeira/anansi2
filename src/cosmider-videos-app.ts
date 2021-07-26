@@ -53,6 +53,12 @@ first
 
 		.pipe(makeLinkSelectorStep('.item-video h4 a'))
 		.pipe(makeFetcherStep(HEADERS))
+		.pipe(makeTransformationStep<Doc, Doc>((doc, emit, done) => {
+			const title = doc.$('.videoDetails h3').eq(0).text().trim()
+			console.log('THIS VIDEO IS CALLED', title)
+			emit(doc)
+			done()
+		}))
 		.pipe(makeLinkSelectorStep('#download_options_block a'))
 		.pipe(makeFilterStep<string>(href => href.indexOf(config.videoRes) !== -1))
 		.pipe(makeDownloaderStep(`/home/bruno/System/CSMD/${config.modelName}`, HEADERS))
