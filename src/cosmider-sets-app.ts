@@ -30,8 +30,6 @@ const HEADERS = {
 	},
 }
 
-// TODO GET MODEL NAME FROM CONFIG
-
 console.log('\n*** STARTING APP: SETS ***')
 
 const first = makeFetcherStep(HEADERS)

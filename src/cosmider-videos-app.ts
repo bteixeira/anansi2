@@ -39,10 +39,7 @@ first
 		.pipe(makeLinkSelectorStep('.item-video h4 a'))
 		.pipe(makeFetcherStep(HEADERS))
 		.pipe(makeLinkSelectorStep('#download_options_block a'))
-		.pipe(makeFilterStep<string>(href => {
-			console.log('FILTER *** ', href, href.indexOf(config.videoRes) !== -1)
-			return href.indexOf(config.videoRes) !== -1
-		}))
+		.pipe(makeFilterStep<string>(href => href.indexOf(config.videoRes) !== -1))
 		.pipe(makeDownloaderStep(`/home/bruno/System/CSMD/${config.modelName}`, HEADERS))
 
 first.write(config.modelPage)

@@ -5,6 +5,7 @@ import makeTransformationStep from './through'
 import * as fs from 'fs'
 import * as crypto from 'crypto'
 import {RequestOptions} from 'https'
+import path from 'path'
 
 export function urlBasePath (url: string): string {
 	return url.slice(url.lastIndexOf('/'), url.lastIndexOf('.'))
@@ -32,8 +33,10 @@ export default class Fetcher {
 			} else {
 				console.log(`[FETCH] START ${url}`)
 				https.get(url, options, res => {
-					console.log(`[FETCH] END ${url}`)
+					console.log(`[FETCH] GOT   ${url}`)
+					fs.mkdirSync(path.dirname(cachePath), {recursive: true})
 					// TODO CHECK IF STREAM CAN BE CREATED, fs.mkdirSync
+					res.on('end', () => console.log(`[FETCH] END   ${url}`))
 					res.pipe(fs.createWriteStream(cachePath))
 					getStream(res).then(pipeBody).catch(reject)
 				})
