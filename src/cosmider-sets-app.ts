@@ -38,6 +38,23 @@ first
 		// TODO PIPE TO HREF SELECTOR TRANSFORM BASED ON MODEL NAME
 		// TODO PIPE TO FETCHER
 		// 	// TODO CAN ALSO GET MODEL NAME HERE FROM HTML
+
+		.pipe(makeTransformationStep<Doc, string>((doc, emit, done) => {
+			doc.$('.item-portrait h4 a').each(function () {
+				const text = doc.$(this).text().trim().toLowerCase()
+				const model = config.modelName.toLowerCase()
+				if (text.indexOf(model) === -1) {
+					return
+				}
+				const href = doc.$(this).attr('href')
+				const resolved = url.resolve(doc.url, href)
+				emit(resolved)
+			})
+			done()
+		}))
+		.pipe(makeFetcherStep(HEADERS))
+
+
 		.pipe(makeLinkSelectorStep('.featured-scenes .item-portrait h4 a'))
 		.pipe(makeFetcherStep(HEADERS))
 		.pipe(makeLinkSelectorStep('#download_options_block a'))
@@ -45,4 +62,4 @@ first
 		.pipe(makeUnzipperStep(`/home/bruno/System/CSMD/${config.modelName}`)) // TODO EMITS DIR PATH
 		// TODO NEW STEP <VOID> Finds "watermark" subdir and flattens it
 
-first.write(config.modelPage) // TODO WRITE MODEL INITIAL LETTER PAGE INSTEAD, GET FROM MODEL NAME
+first.write(`https://www.cosmid.net/members/models/1/name/${config.modelName[0].toLowerCase()}/`)

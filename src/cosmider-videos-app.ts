@@ -36,10 +36,25 @@ console.log('\n*** STARTING APP: VIDEOS ***')
 const first = makeFetcherStep(HEADERS)
 
 first
+		.pipe(makeTransformationStep<Doc, string>((doc, emit, done) => {
+			doc.$('.item-portrait h4 a').each(function () {
+				const text = doc.$(this).text().trim().toLowerCase()
+				const model = config.modelName.toLowerCase()
+				if (text.indexOf(model) === -1) {
+					return
+				}
+				const href = doc.$(this).attr('href')
+				const resolved = url.resolve(doc.url, href)
+				emit(resolved)
+			})
+			done()
+		}))
+		.pipe(makeFetcherStep(HEADERS))
+
 		.pipe(makeLinkSelectorStep('.item-video h4 a'))
 		.pipe(makeFetcherStep(HEADERS))
 		.pipe(makeLinkSelectorStep('#download_options_block a'))
 		.pipe(makeFilterStep<string>(href => href.indexOf(config.videoRes) !== -1))
 		.pipe(makeDownloaderStep(`/home/bruno/System/CSMD/${config.modelName}`, HEADERS))
 
-first.write(config.modelPage)
+first.write(`https://www.cosmid.net/members/models/1/name/${config.modelName[0].toLowerCase()}/`)

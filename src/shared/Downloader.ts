@@ -29,6 +29,7 @@ export default class Downloader {
 				console.log(`[DOWNL] START ${basepath}`)
 				https.get(url, options, res => {
 					fs.mkdirSync(path.dirname(filename), {recursive: true})
+					console.log(`[DOWNL] SIZE  `, res.headers['content-length'])
 					console.log(`[DOWNL] Created dirs`, path.dirname(filename), fs.existsSync(path.dirname(filename)))
 					const outputStream = fs.createWriteStream(filename)
 					outputStream.on('error', err => console.error('[DOWNL] ERROR', err))
