@@ -28,15 +28,14 @@ export default class Fetcher {
 			}
 
 			if (fs.existsSync(cachePath)) {
-				console.log(`[FETCH] CACHE ${url}`)
+				console.log('[FETCH]', url, 'OK FROM CACHE')
 				getStream(fs.createReadStream(cachePath)).then(pipeBody)
 			} else {
-				console.log(`[FETCH] START ${url}`)
 				https.get(url, options, res => {
-					console.log(`[FETCH] GOT   ${url}`)
 					fs.mkdirSync(path.dirname(cachePath), {recursive: true})
 					// TODO CHECK IF STREAM CAN BE CREATED, fs.mkdirSync
-					res.on('end', () => console.log(`[FETCH] END   ${url}`))
+					res.on('end', () => console.log('[FETCH]', url, 'OK'))
+					res.on('error', err => console.error('[FETCH]', url, 'ERROR', err))
 					res.pipe(fs.createWriteStream(cachePath))
 					getStream(res).then(pipeBody).catch(reject)
 				})

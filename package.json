@@ -21,6 +21,7 @@
 		"get-stream": "^5.1.0",
 		"mississippi": "^4.0.0",
 		"node-stream-zip": "^1.13.6",
+		"pretty-bytes": "^5.6.0",
 		"through2": "^3.0.1",
 		"ts-node": "^8.8.2",
 		"ts-node-dev": "^1.0.0-pre.44",
