@@ -8,7 +8,7 @@ import * as StreamZip from 'node-stream-zip'
  * - target dir (relative)
  */
 export function makeUnzipperStep (target = './expanded') {
-	return makeTransformationStep<string, void>((filename, emit, done) => {
+	return makeTransformationStep<string, string>((filename, emit, done) => {
 		console.log(`[UNZIP] START ${filename}`)
 		const zip = new StreamZip.async({
 			file: filename,
@@ -21,6 +21,9 @@ export function makeUnzipperStep (target = './expanded') {
 		zip.extract(null, pathname).then((count) => {
 			console.log(`[UNZIP] Extracted ${count} entries from ${filename}`)
 			return zip.close()
-		}).then(done) // TODO MUST EMIT THE ABS/REL PATH OF THE GENERATED DIR
+		}).then(() => {
+			emit(pathname)
+			done()
+		})
 	})
 }

@@ -61,6 +61,6 @@ first
 		}))
 		.pipe(makeLinkSelectorStep('#download_options_block a'))
 		.pipe(makeFilterStep<string>(href => href.indexOf(config.videoRes) !== -1))
-		.pipe(makeDownloaderStep(`/home/bruno/System/CSMD/${config.modelName}`, HEADERS))
+		.pipe(makeDownloaderStep(`/home/bruno/System/CSMD/__INCOMING/${config.modelName}`, HEADERS))
 
 first.write(`https://www.cosmid.net/members/models/1/name/${config.modelName[0].toLowerCase()}/`)

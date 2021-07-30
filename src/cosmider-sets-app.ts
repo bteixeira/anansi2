@@ -23,6 +23,9 @@ import {makeDownloaderStep} from './shared/Downloader'
 import {makeUnzipperStep} from './shared/Unzipper'
 import config from '../cosmider.json'
 import makeLinkSelectorStep from './shared/transforms/LinkSelector'
+import glob from 'glob'
+import * as path from 'path'
+import * as fs from 'fs'
 
 const HEADERS = {
 	headers: {
@@ -59,7 +62,18 @@ first
 		.pipe(makeFetcherStep(HEADERS))
 		.pipe(makeLinkSelectorStep('#download_options_block a'))
 		.pipe(makeDownloaderStep(`./downloads/${config.modelName}`, HEADERS)) // Target dir
-		.pipe(makeUnzipperStep(`/home/bruno/System/CSMD/${config.modelName}`)) // TODO EMITS DIR PATH
-		// TODO NEW STEP <VOID> Finds "watermark" subdir and flattens it
+		.pipe(makeUnzipperStep(`/home/bruno/System/CSMD/__INCOMING/${config.modelName}`))
+		.pipe(makeTransformationStep<string, void>((dir, emit, done) => {
+			console.log('[FLATN]', dir)
+			const source = path.resolve(dir, './fullwatermarked')
+			glob(`${source}/*`, {}, (err, files) => {
+				// console.log(files.length)
+				files.forEach(f => {
+					const t = path.resolve(dir, path.basename(f))
+					fs.renameSync(f, t)
+				})
+				fs.rmdirSync(source)
+			})
+		}))
 
 first.write(`https://www.cosmid.net/members/models/1/name/${config.modelName[0].toLowerCase()}/`)

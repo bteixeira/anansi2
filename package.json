@@ -19,6 +19,7 @@
 		"cheerio": "^1.0.0-rc.10",
 		"concat-stream": "^2.0.0",
 		"get-stream": "^5.1.0",
+		"glob-move": "^1.0.1",
 		"mississippi": "^4.0.0",
 		"node-stream-zip": "^1.13.6",
 		"pretty-bytes": "^5.6.0",
